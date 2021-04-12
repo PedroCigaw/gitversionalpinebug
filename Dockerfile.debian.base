@@ -1,0 +1,22 @@
+### This will build a docker image with the initial project, prior to the dotnet publish. 
+### The Project and root files are copied into the container including the .get folder
+### Bash into the container and run dotnet-gitversion will return the expected results
+
+ARG VERSION=5.0
+
+FROM mcr.microsoft.com/dotnet/runtime-deps:$VERSION AS base
+WORKDIR /app
+
+
+FROM mcr.microsoft.com/dotnet/sdk:$VERSION AS sdkwithgitversion
+RUN dotnet tool install -g GitVersion.Tool
+ENV PATH="$PATH:/root/.dotnet/tools"
+
+FROM sdkwithgitversion AS build
+WORKDIR /src
+COPY ["src/GitVersionMSBuildBug/GitVersionMSBuildBug.csproj", "src/GitVersionMSBuildBug/"]
+COPY ["src/nuget.config", "src/GitVersionMSBuildBug/"]
+COPY ["src/global.json", "src/GitVersionMSBuildBug/"]
+RUN dotnet restore "src/GitVersionMSBuildBug/GitVersionMSBuildBug.csproj" --runtime debian-x64
+COPY . .
+

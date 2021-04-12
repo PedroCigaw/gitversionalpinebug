@@ -1,0 +1,16 @@
+assembly-versioning-scheme: MajorMinorPatchTag
+mode: ContinuousDelivery
+next-version: 1.0.12
+branches:
+  develop:
+    tag: beta
+    increment: Minor
+  feature:
+    tag: alpha.{BranchName}
+  release:
+    tag: rc
+  hotfix:
+    tag: rc
+ignore:
+  sha: []
+merge-message-formats: {}
